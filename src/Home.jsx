@@ -10,8 +10,8 @@ const Home = () => {
         <div>
             <h1>Home</h1>
             <p>4桁の数字を入力してください。</p>
-            <input type="text" onChange={(e) => setCode(e.target.value)} />
-            <button onClick={() => history.push("/" + code)}>START!!</button>
+            <input type="tel" maxlength="4" onChange={(e) => setCode(e.target.value)} />
+            <button onClick={() => history.push("/play/" + code)}>START!!</button>
         </div>
     )
 }

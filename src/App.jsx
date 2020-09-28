@@ -27,7 +27,7 @@ function App() {
       <h1>Word Wolf App</h1>
       <Switch>
         <Route exact path='/' component={Home} />
-        <Route exact path='/:id' component={Room} />
+        <Route exact path='/play/:id' component={Room} />
         <Route path='/adminnnnn' component={Admin} />
       </Switch>
     </BrowserRouter >

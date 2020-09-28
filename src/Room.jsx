@@ -8,8 +8,8 @@ const Room = (code) => {
     const [themes, setThemes] = useState()
     const history = useHistory()
     const location = useLocation()
-    const code1 = location.pathname.slice(1)
-    const code2 = location.pathname.slice(1) ** 2
+    const code1 = location.pathname.slice(6)
+    const code2 = location.pathname.slice(6) ** 2
 
     useEffect(() => {
         const dice = code1 % 70
