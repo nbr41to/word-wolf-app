@@ -7,8 +7,7 @@ export const shuffle = ([...array]) => {
     return array;
 }
 
-
-export const subjects = [
+export const themes = [
     ["机", "椅子"],
     ["コンタクトレンズ", "メガネ"],
     ["冬休み", "春休み"],

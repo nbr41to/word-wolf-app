@@ -24,13 +24,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <h1>Word Wolf App</h1>
+      <h1>Online Word Wolf</h1>
       <Switch>
         <Route exact path='/' component={Home} />
-        <Route exact path='/play/:id' component={Room} />
+        <Route exact path='/room/:id' component={Room} />
         <Route path='/adminnnnn' component={Admin} />
       </Switch>
-    </BrowserRouter >
+    </BrowserRouter>
   );
 }
 
