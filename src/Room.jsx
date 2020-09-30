@@ -5,18 +5,15 @@ import Gaming from "./Gaming"
 // import { subjects, shuffle } from './subjects'
 
 const Room = ({ history, location }) => {
-    // console.log(subjects[10])
     const [room, setRoom] = useState()
     const [yourTheme, setYourTheme] = useState()
     const [openGaming, setOpenGaming] = useState(false)
-    // const history = useHistory()
-    // const location = useLocation()
     const roomCode = location.pathname.slice(6)
     console.log(room)
-    const players = ["ねずみ", "うさぎ", "きつね", "ひつじ"]
 
     useEffect(() => {
-        firebase.firestore().collection("rooms").doc(roomCode).get().then((doc) => {
+        // データを監視したいのでonSnapshot
+        firebase.firestore().collection("rooms").doc(roomCode).onSnapshot((doc) => {
             if (doc.exists) {
                 setRoom(doc.data())
             }
@@ -47,6 +44,11 @@ const Room = ({ history, location }) => {
                         <h2>部屋コードは{roomCode}です。</h2>
                         <p>部屋コードを知っている4人でワードウルフをお楽しみいただけます！</p>
 
+                        <h3>現在の参加者</h3>
+                        <ul>
+                            {room?.players.map((player) => <li>{player} さん</li>)}
+                        </ul>
+
                         <h3>【ルール】</h3>
                         <p>これから、あるテーマに関して3分間4人でトークしてもらいます。しかし、4人のうち1人だけ違うテーマの人がいます。この人は、他の3人のテーマに話を合わせる狼です。（あなたが狼かそうでないかわからない状態でゲームはスタートします。）</p>
                         <ul>
@@ -64,7 +66,7 @@ const Room = ({ history, location }) => {
                                 </button>
                             )
                         }
-                        {openGaming && <Gaming theme={yourTheme} />}
+                        {openGaming && <Gaming theme={yourTheme} room={room} />}
                         <hr />
                         <button onClick={() => history.push("/")}>Homeへ戻る</button>
                     </div >

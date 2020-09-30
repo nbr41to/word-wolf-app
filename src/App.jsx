@@ -24,12 +24,15 @@ function App() {
 
   return (
     <BrowserRouter>
-      <h1>Online Word Wolf</h1>
+      <h1 style={{ display: 'block', textAlign: 'center' }}>Online Word Wolf</h1>
+      <hr />
       <Switch>
         <Route exact path='/' component={Home} />
         <Route exact path='/room/:id' component={Room} />
         <Route path='/adminnnnn' component={Admin} />
       </Switch>
+      <hr />
+      <small style={{ display: 'block', textAlign: 'center' }}>Copyright 2020 @tivehack</small>
     </BrowserRouter>
   );
 }
