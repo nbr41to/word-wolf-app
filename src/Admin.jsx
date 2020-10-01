@@ -5,18 +5,20 @@ import firebase from './firebase'
 
 
 const Admin = () => {
-    const [code, setCode] = useState("")
-    const [subjects, setSubject] = useState()
-    const history = useHistory()
-    const location = useLocation()
-    const code1 = code
-    const code2 = code ** 2
-
+    const [onChange, setOnChange] = useState()
+    const [code, setCode] = useState()
+    const [room, setRoom] = useState()
+    console.log(room)
 
     useEffect(() => {
-
-        // thmesをシャッフルして上書きする
-    }, [])
+        if (code) {
+            firebase.firestore().collection("rooms").doc(code).onSnapshot((doc) => {
+                if (doc.exists) {
+                    setRoom(doc.data())
+                }
+            });
+        }
+    }, [code])
 
     // テーマの追加機能も実装
 
@@ -30,19 +32,28 @@ const Admin = () => {
     //     })
     // }
 
-
+    const search = () => {
+        setCode(onChange)
+    }
 
     return (
-        <div>
+        <>
             <h2>Admin</h2>
-            <p>4桁の数字を入力してください。</p>
-            <input type="tel" maxlength="4" onChange={(e) => setCode(e.target.value)} />
-            {/* <button onClick={search}>RESULT</button> */}
-            {/* {themes?.map((theme, index) => <p key={index}>Player{index + 1}:{theme}</p>)} */}
-
-            {/* <button onClick={() => themesUpdate()}>themeUpdate</button> */}
-
-        </div>
+            <p>6桁の数字を入力してください。</p>
+            <input type="tel" maxlength="6" onChange={(e) => setOnChange(e.target.value)} />
+            <button onClick={search}>取得</button>
+            {room &&
+                <>
+                    {!Object.keys(room.table).length ? <p>まだゲームが始まっていません</p>
+                        :
+                        <ul>
+                            <h3>ゲーム中...</h3>
+                            {Object.keys(room.table).map((player, index) => <li key={index}>{player}さん：{room.table[player]}({room.votes.filter(vote => vote === player).length}票)</li>)}
+                            <p>票状況：{room.votes.length}/{room.players.length}</p>
+                        </ul>}
+                </>
+            }
+        </>
     )
 }
 
