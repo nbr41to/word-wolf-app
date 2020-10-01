@@ -26,22 +26,19 @@ const Home = () => {
             const code = String(Math.random() * 1).slice(2, 8) // 6桁の乱数文字列
 
             firebase.auth().signInAnonymously()
-                .then(() => {
-                    if (code) {
-                        const wolf = Number(code) % 4
-                        const thisThemes = themes[Number(code) % 70].theme
-                        const thisTheme = [thisThemes[Number(code) % 2], thisThemes[Number(code) % 2], thisThemes[Number(code) % 2], thisThemes[Number(code) % 2]]
-                        thisTheme[wolf] = thisThemes[(Number(code) + 1) % 2]
-                        return thisTheme
-                        // return thisThemes
-                    }
-                })
+                // .then(() => {
+                //         const wolf = Number(code) % 4
+                //         const thisTheme = [thisThemes[Number(code) % 2], thisThemes[Number(code) % 2], thisThemes[Number(code) % 2], thisThemes[Number(code) % 2]]
+                //         thisTheme[wolf] = thisThemes[(Number(code) + 1) % 2]
+                //         const thisThemes = themes[Number(code) % 70].theme
+                //         return thisTheme
+                // })
                 .then((thisTheme) => {
                     firebase.firestore().collection("rooms").doc(code).set(
                         {
                             id: id,
                             code: code,
-                            theme: thisTheme,
+                            theme: themes[Number(code) % 70].theme,
                             players: [name],
                             votes: [],
                         }

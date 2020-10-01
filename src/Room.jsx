@@ -25,9 +25,15 @@ const Room = ({ history, location }) => {
     }, [])
 
 
-    const gameStart = (theme, index) => {
+
+
+    const gameStart = () => {
         // alert(`あなたのテーマ：${theme}`)
-        setYourTheme(theme)
+
+    }
+
+    const selectPlayer = (theme, index) => {
+        // setYourTheme(theme)
         for (let i = 0; i < 4; i++) {
             if (i !== index) {
                 document.getElementById(i).setAttribute("disabled", true);
@@ -35,6 +41,7 @@ const Room = ({ history, location }) => {
         }
         setOpenGaming(true)
     }
+
     return (
         <>
             {
@@ -60,9 +67,9 @@ const Room = ({ history, location }) => {
                             <li>つまり、狼であろうとなかろうと疑われたら負けのゲーム</li>
                         </ul>
                         {
-                            room.theme.map((theme, index) =>
-                                <button onClick={() => gameStart(theme, index)} key={index} id={index}>
-                                    {room.players[index]}
+                            room.players.map((player, index) =>
+                                <button onClick={() => selectPlayer(yourTheme, index)} key={index} id={index}>
+                                    {player}
                                 </button>
                             )
                         }
