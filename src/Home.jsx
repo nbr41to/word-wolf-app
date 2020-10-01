@@ -10,12 +10,14 @@ const Home = () => {
     const history = useHistory()
 
     useEffect(() => {
-        firebase.firestore().collection("subjects").onSnapshot((snapshot) => {
-            let getThemes = snapshot.docs.map((doc) => {
-                const getTheme = doc.data();
-                return getTheme
-            });
-            setThemes(getThemes)
+        firebase.auth().signInAnonymously().then(() => {
+            firebase.firestore().collection("subjects").onSnapshot((snapshot) => {
+                let getThemes = snapshot.docs.map((doc) => {
+                    const getTheme = doc.data();
+                    return getTheme
+                });
+                setThemes(getThemes)
+            })
         });
     }, [])
 
@@ -25,7 +27,7 @@ const Home = () => {
             const code = String(Math.random() * 1).slice(2, 8) // 6桁の乱数文字列
 
             firebase.auth().signInAnonymously()
-                .then((thisTheme) => {
+                .then(() => {
                     firebase.firestore().collection("rooms").doc(code).set(
                         {
                             id: id,
