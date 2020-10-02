@@ -41,6 +41,7 @@ const Home = () => {
                             players: [name],
                             table: {},
                             isGaming: false,
+                            finished: false,
                             votes: [],
                         }
                     )

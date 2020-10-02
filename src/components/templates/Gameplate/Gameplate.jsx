@@ -4,8 +4,8 @@ import firebase from '../../../firebase'
 
 import Button from '../../atoms/Button'
 
-const Gameplate = ({ theme, room }) => {
-    const [timer, setTimer] = useState(180) // カウントダウンする秒数
+const Gameplate = ({ theme, room, playerName }) => {
+    const [timer, setTimer] = useState(200) // カウントダウンする秒数
     const [voted, setVoted] = useState(false)
 
     useEffect(() => {
@@ -43,13 +43,23 @@ const Gameplate = ({ theme, room }) => {
         setVoted(true)
     }
 
+    const forceFinish = () => {
+        firebase.auth().signInAnonymously()
+            .then(() => {
+                firebase.firestore().collection("rooms").doc(room.code).update({
+                    finished: true,
+                })
+            })
+    }
+
     return (
         <StyledComponents>
             <h2>◆あなたのテーマ</h2>
             <h1>「{theme}」</h1>
             <h2>◆制限時間</h2>
+            {playerName === room.host && <Button value="強制終了" onClick={forceFinish} />}
             <h2>残り{timer}秒</h2>
-            {timer <= 0 &&
+            {(timer <= 0 || room.finished) &&
                 <>
                     <h2>◆投票</h2>
                     {room.players.map((player, index) =>
@@ -58,11 +68,11 @@ const Gameplate = ({ theme, room }) => {
                 </>
             }
             {voted && <p>他の人の投票を待っています</p>}
-            {room.players.length <= room.votes.length &&
+            {Object.keys(room.table).length <= room.votes.length &&
                 <>
                     <h2>◆結果</h2>
                     {Object.keys(room.table).map((player, index) =>
-                        <li key={index}>{player}さん：{room.votes.filter(vote => vote === player).length}票</li>
+                        <li key={index}>{player}さん【{room.table[player]}】：{room.votes.filter(vote => vote === player).length}票</li>
                     )}
                 </>
             }

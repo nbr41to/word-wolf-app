@@ -75,7 +75,7 @@ const Room = ({ history, location }) => {
                             players={room?.players}
                         />
                         {room.isGaming &&
-                            <Gameplate theme={room?.table[playerName]} room={room} />
+                            <Gameplate theme={room?.table[playerName]} room={room} playerName={playerName} />
                         }
                         <Rules />
                         <StartButton
