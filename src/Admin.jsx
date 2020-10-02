@@ -3,6 +3,10 @@ import { useHistory, useLocation } from 'react-router-dom'
 // import { themes, shuffle } from './subjects'
 import firebase from './firebase'
 
+import Button from './components/atoms/Button'
+import Input from './components/atoms/Input'
+
+
 
 const Admin = () => {
     const [onChange, setOnChange] = useState()
@@ -40,8 +44,8 @@ const Admin = () => {
         <>
             <h2>Admin</h2>
             <p>6桁の数字を入力してください。</p>
-            <input type="tel" maxlength="6" onChange={(e) => setOnChange(e.target.value)} />
-            <button onClick={search}>取得</button>
+            <Input type="tel" maxlength="6" onChange={(e) => setOnChange(e.target.value)} />
+            <Button value="取得" onClick={search} />
             {room &&
                 <>
                     {!Object.keys(room.table).length ? <p>まだゲームが始まっていません</p>

@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import firebase from './firebase'
-import Gaming from "./Gaming"
+
+import Button from './components/atoms/Button'
+import Rules from "./components/templates/Rules"
+import Member from "./components/templates/Member"
+import StartButton from "./components/templates/StartButton"
+import Gameplate from "./components/templates/Gameplate"
+
 
 // import { subjects, shuffle } from './subjects'
 
@@ -50,51 +56,40 @@ const Room = ({ history, location }) => {
         document.getElementById("start-button").setAttribute("disabled", true);
     }
 
+    const backHome = () => {
+        if (window.confirm("本当にHOMEに戻りますか？（作った部屋は削除されます）")) {
+            history.goBack();
+        }
+    }
+
     return (
         <>
             {
                 room ?
                     <div>
-                        <h2> ようこそ！</h2>
+                        <h1>ROOM</h1>
                         <h2>部屋コードは{roomCode}です。</h2>
-                        <p>部屋コードを知っている4人でワードウルフをお楽しみいただけます！</p>
-
-                        <h3>現在の参加者</h3>
-                        <ul>
-                            {room?.players.map((player, index) => <li key={index}>{player} さん</li>)}
-                        </ul>
-                        <p>あなた：{playerName}</p>
-                        <h3>【注意】</h3>
-                        <ul>
-                            <li>部屋からブラウザを戻ってしまうと部屋は消去されます.</li>
-                            <li>ゲーム中にブラウザを更新をしますと正常に機能しません.</li>
-                        </ul>
-                        <details>
-                            <summary>【ルール】</summary>
-                            <p>ホストがゲームを開始したら,下のピンクの画面を見てください。そこに書かれたテーマについて3分間話し合ってもらいます。しかし、1人だけ違うテーマが与えられます。その人は、他の人のテーマに話を合わせる狼です。そして、あなたは狼かそうでないかわからない状態でゲームはスタートします。</p>
-                            <ul>
-                                <li>ホストは人数がそろったら「GAME START」ボタンを押してください</li>
-                                <li>トークの時間は3分間</li>
-                                <li>ゲームが始まったらピンクの画面を見てください</li>
-                                <li>トーク終了後に投票ボタンが表れますので、狼だと思う人に票を入れてください</li>
-                                <li>全員が投票したら結果が表示されます</li>
-                                <li>最も多い票の人が狼だった場合は狼の負け</li>
-                                <li>最も多い票の人が狼でない場合は狼と思われた人の負け</li>
-                                <li>つまり、狼であろうとなかろうと疑われたら負けのゲーム</li>
-                            </ul>
-                        </details>
-                        {playerName === room.host ?
-                            <button id="start-button" onClick={gameStart}>GAME START</button>
-                            :
-                            <p>ホストがゲームを開始するのをお待ち下さい...</p>}
-                        {room.isGaming && <Gaming theme={room?.table[playerName]} room={room} />}
-                        <hr />
-                        <button onClick={() => history.push("/")}>Homeへ戻る</button>
+                        <p>一緒にプレイする人にコードを教えて招待しましょう！</p>
+                        <Member
+                            playerName={playerName}
+                            players={room?.players}
+                        />
+                        {room.isGaming &&
+                            <Gameplate theme={room?.table[playerName]} room={room} />
+                        }
+                        <Rules />
+                        <StartButton
+                            playerName={playerName}
+                            host={room?.host}
+                            onClickButton={gameStart}
+                        />
+                        <Button value="Homeへ戻る" onClick={backHome} />
                     </div >
                     :
                     <>
                         <p>お探しのお部屋はありません。</p>
                         <p>もう一度、部屋コードをご確認ください🙇‍♂️</p>
+                        <Button value="Homeへ戻る" onClick={backHome} />
                     </>
             }
         </>

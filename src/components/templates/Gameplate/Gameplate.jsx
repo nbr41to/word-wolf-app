@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-import firebase from './firebase'
+import { StyledComponents } from './Gameplate.styled'
+import firebase from '../../../firebase'
 
-const Gaming = ({ theme, room }) => {
-    const [timer, setTimer] = useState(200) // カウントダウンする秒数
+import Button from '../../atoms/Button'
+
+const Gameplate = ({ theme, room }) => {
+    const [timer, setTimer] = useState(180) // カウントダウンする秒数
     const [voted, setVoted] = useState(false)
 
     useEffect(() => {
@@ -31,32 +33,41 @@ const Gaming = ({ theme, room }) => {
             document.getElementById(i).setAttribute("disabled", true)
             if (i === index) {
                 // document.getElementById(i).style.backgroundColor = "limegreen"
-                document.getElementById(i).style.color = "red"
+                document.getElementById(i).style.backgroundColor = "red"
             }
         }
         firebase.firestore().collection("rooms").doc(room.code).update({
             // votes: firebase.firestore.FieldValue.arrayUnion(player), // 重複を許す追加ができないのだ
             votes: [...room.votes, player]
         })
+        setVoted(true)
     }
 
     return (
-        <div style={{ width: '100vw', backgroundColor: 'pink', }}>
-            <h2>あなたのテーマ</h2>
-            <h2>{theme}</h2>
-            <h2>制限時間</h2>
+        <StyledComponents>
+            <h2>◆あなたのテーマ</h2>
+            <h1>「{theme}」</h1>
+            <h2>◆制限時間</h2>
             <h2>残り{timer}秒</h2>
-            <h2>投票</h2>
             {timer <= 0 &&
-                room.players.map((player, index) => <button id={index} key={index} onClick={() => vote(player, index)}>{player}</button>)
+                <>
+                    <h2>◆投票</h2>
+                    {room.players.map((player, index) =>
+                        <Button id={index} key={index} value={player} onClick={() => vote(player, index)} />
+                    )}
+                </>
             }
-            <p>他の人の投票を待っています</p>
-            <h2>結果</h2>
+            {voted && <p>他の人の投票を待っています</p>}
             {room.players.length <= room.votes.length &&
-                Object.keys(room.table).map((player, index) => <li key={index}>{player}さん：{room.votes.filter(vote => vote === player).length}票</li>)
+                <>
+                    <h2>◆結果</h2>
+                    {Object.keys(room.table).map((player, index) =>
+                        <li key={index}>{player}さん：{room.votes.filter(vote => vote === player).length}票</li>
+                    )}
+                </>
             }
-        </div >
+        </StyledComponents>
     )
 }
 
-export default Gaming
+export default Gameplate

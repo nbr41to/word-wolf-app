@@ -4,11 +4,8 @@ import firebase from './firebase'
 import shortid from "shortid";
 
 import Rules from './components/templates/Rules'
-
-import TextField from '@material-ui/core/TextField';
 import Entry from './components/templates/Entry'
 import Input from './components/atoms/Input'
-import Button from './components/atoms/Button'
 
 const Home = () => {
     const [name, setName] = useState("")
@@ -86,13 +83,13 @@ const Home = () => {
 
     return (
         <div>
-            <h1>Home</h1>
+            <h1>HOME</h1>
             <p>このアプリはグループ通話をしながら、ワードウルフができるアプリです！</p>
             <Rules />
 
             <h2>ゲーム内の名前(必須)</h2>
             {/* <TextField label="Player Name" variant="outlined" /> */}
-            <Input type="text" placeholder="あなたの名前" onChange={(e) => setName(e.target.value)} />
+            <Input type="text" placeholder="Your name" onChange={(e) => setName(e.target.value)} />
             <div style={{ display: 'flex' }}>
                 <Entry
                     style={{ width: '50%' }}
@@ -114,7 +111,7 @@ const Home = () => {
                     <Input
                         type="tel"
                         maxLength="6"
-                        placeholder="部屋コード"
+                        placeholder="Room code"
                         onChange={(e) => setCode(e.target.value)}
                     />
                 </Entry>
