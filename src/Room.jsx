@@ -61,6 +61,10 @@ const Room = ({ history, location }) => {
             history.goBack();
         }
     }
+    // ブラウザバックの確認
+    // window.addEventListener('popstate', function (e) {
+    //     window.confirm('このページを移動移動しますか？（作った部屋は削除されます）');
+    // });
 
     return (
         <>

@@ -29,15 +29,15 @@ const Admin = () => {
     }
 
     // テーマの追加機能も実装
-    const themesUpdate = () => {
-        firebase.auth().signInAnonymously().then(() => {
-            themes.map(theme => {
-                firebase.firestore().collection("subjects").doc().set(
-                    { theme: theme }
-                )
-            })
-        })
-    }
+    // const themesUpdate = () => {
+    //     firebase.auth().signInAnonymously().then(() => {
+    //         themes.map(theme => {
+    //             firebase.firestore().collection("subjects").doc().set(
+    //                 { theme: theme }
+    //             )
+    //         })
+    //     })
+    // }
 
 
     return (
