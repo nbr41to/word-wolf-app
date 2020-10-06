@@ -1,65 +1,102 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-import { subjects, shuffle } from './subjects'
+import firebase from './firebase'
 
-const Room = (code) => {
-    // console.log(subjects[10])
-    const [subject, setSubject] = useState()
-    const [themes, setThemes] = useState()
-    const history = useHistory()
-    const location = useLocation()
-    const code1 = location.pathname.slice(6)
-    const code2 = location.pathname.slice(6) ** 2
+import Button from './components/atoms/Button'
+import Rules from "./components/templates/Rules"
+import Member from "./components/templates/Member"
+import StartButton from "./components/templates/StartButton"
+import Gameplate from "./components/templates/Gameplate"
+
+
+// import { subjects, shuffle } from './subjects'
+
+const Room = ({ history, location }) => {
+    const [room, setRoom] = useState()
+    const roomCode = location.pathname.slice(6)
+    const playerName = location.state.playerName
+    // console.log(room)
 
     useEffect(() => {
-        const dice = code1 % 70
-        setSubject(subjects[dice])
+        // データを監視したいのでonSnapshot
+        firebase.firestore().collection("rooms").doc(roomCode).onSnapshot((doc) => {
+            if (doc.exists) {
+                setRoom(doc.data())
+            }
+        });
+        // 一人でも退室したら部屋消える関数
+        return () => {
+            firebase.firestore().collection("rooms").doc(roomCode).delete()
+        }
+        // オーナーが退室したら部屋消える関数を作りたい
+        // return () => {
+        //     if (room?.host === playerName) {
+        //         firebase.firestore().collection("rooms").doc(roomCode).delete()
+        //     }
+        // }
     }, [])
 
-    useEffect(() => {
-        if (subject) {
-            let dice = Number(code1)
-            for (let i = 0; i < String(code2).length; i++) {
-                dice += Number(String(code2).charAt(i))
-            }
-            const themes = [subject[dice % 2], subject[dice % 2], subject[dice % 2], subject[dice % 2]]
-            themes[dice % 4] = subject[(dice % 2 + 1) % 2]
-            setThemes(themes)
-        }
-    }, [subject])
-
-    const themeDialog = (theme, index) => {
-        alert(`あなたのテーマ：${theme}`)
-        for (let i = 0; i < 4; i++) {
-            if (i !== index) {
-                document.getElementById(i).setAttribute("disabled", true);
+    const gameStart = () => {
+        const dice = Number([...String((Number(roomCode) + 123) ** 3)].reduce((sum, num) => Number(sum) + Number(num)))
+        // wolf選出演算
+        const wolf = dice % room.players.length
+        const themes = []
+        const table = {}
+        for (let i = 0; i < room.players.length; i++) {
+            if (i !== wolf) {
+                table[room.players[i]] = room.theme[dice % 2]
+            } else {
+                table[room.players[i]] = room.theme[(dice + 1) % 2]
             }
         }
-
+        firebase.firestore().collection("rooms").doc(roomCode).update({
+            table: table,
+            isGaming: true,
+            votes: []
+        })
+        document.getElementById("start-button").setAttribute("disabled", true);
     }
 
+    const backHome = () => {
+        if (window.confirm("本当にHOMEに戻りますか？（作った部屋は削除されます）")) {
+            history.goBack();
+        }
+    }
+    // ブラウザバックの確認
+    // window.addEventListener('popstate', function (e) {
+    //     window.confirm('このページを移動移動しますか？（作った部屋は削除されます）');
+    // });
+
     return (
-        <div>
-            <h2>ご参加ありがとうございます！</h2>
-            <h2>ゲームを楽しみましょう！</h2>
-            <h3>【ルール】</h3>
-            <p>これから、あるテーマに関して3分間4人でトークしてもらいます。しかし、4人のうち1人だけ違うテーマの人がいます。この人は、他の3人のテーマに話を合わせる狼です。（あなたが狼かそうでないかわからない状態でゲームはスタートします。）</p>
-            <ul>
-                <li>下にある自分の番号のボタンを押してテーマを確認します</li>
-                <li>トークの時間は3分間</li>
-                <li>トーク終了後に狼だと思う人に票を入れます</li>
-                <li>最も多い票の人が狼だった場合は狼の負け</li>
-                <li>最も多い票の人が狼でない場合は狼と思われた人の負け</li>
-                <li>つまり、狼であろうとなかろうと疑われたら負けのゲーム</li>
-            </ul>
-            {themes?.map((theme, index) =>
-                <button onClick={() => themeDialog(theme, index)} key={index} id={index}>
-                    Player{index + 1}
-                </button>
-            )}
-            <hr />
-            <button onClick={() => history.push("/")}>Homeへ戻る</button>
-        </div>
+        <>
+            {
+                room ?
+                    <div>
+                        <h1>ROOM</h1>
+                        <h2>部屋コードは{roomCode}です。</h2>
+                        <p>一緒にプレイする人にコードを教えて招待しましょう！</p>
+                        <Member
+                            playerName={playerName}
+                            players={room?.players}
+                        />
+                        {room.isGaming &&
+                            <Gameplate theme={room?.table[playerName]} room={room} playerName={playerName} />
+                        }
+                        <Rules />
+                        <StartButton
+                            playerName={playerName}
+                            host={room?.host}
+                            onClickButton={gameStart}
+                        />
+                        <Button value="Homeへ戻る" onClick={backHome} />
+                    </div >
+                    :
+                    <>
+                        <p>お探しのお部屋はありません。</p>
+                        <p>もう一度、部屋コードをご確認ください🙇‍♂️</p>
+                        <Button value="Homeへ戻る" onClick={backHome} />
+                    </>
+            }
+        </>
     )
 }
 
