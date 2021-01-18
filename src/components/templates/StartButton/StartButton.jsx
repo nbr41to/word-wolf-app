@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyledComponents } from './StartButton.styled'
-import Button from '../../atoms/Button'
+import { Button } from '../../atoms/Button'
 
 const Member = ({ playerName, host, onClickButton }) => {
     return (
@@ -14,4 +14,4 @@ const Member = ({ playerName, host, onClickButton }) => {
     )
 }
 
-export default Member;
+export default Member

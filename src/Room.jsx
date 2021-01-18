@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import firebase from './firebase'
 
-import Button from './components/atoms/Button'
+import { Button } from 'components/atoms/Button'
 import Rules from "./components/templates/Rules"
 import Member from "./components/templates/Member"
 import StartButton from "./components/templates/StartButton"
@@ -22,7 +22,7 @@ const Room = ({ history, location }) => {
             if (doc.exists) {
                 setRoom(doc.data())
             }
-        });
+        })
         // 一人でも退室したら部屋消える関数
         return () => {
             firebase.firestore().collection("rooms").doc(roomCode).delete()
@@ -53,12 +53,12 @@ const Room = ({ history, location }) => {
             isGaming: true,
             votes: []
         })
-        document.getElementById("start-button").setAttribute("disabled", true);
+        document.getElementById("start-button").setAttribute("disabled", true)
     }
 
     const backHome = () => {
         if (window.confirm("本当にHOMEに戻りますか？（作った部屋は削除されます）")) {
-            history.goBack();
+            history.goBack()
         }
     }
     // ブラウザバックの確認

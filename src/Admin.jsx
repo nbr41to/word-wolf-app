@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-// import { themes, shuffle } from './subjects'
 import firebase from './firebase'
 
-import Button from './components/atoms/Button'
+import { Button } from 'components/atoms/Button'
 import Input from './components/atoms/Input'
 
 
@@ -20,7 +18,7 @@ const Admin = () => {
                 if (doc.exists) {
                     setRoom(doc.data())
                 }
-            });
+            })
         }
     }, [code])
 

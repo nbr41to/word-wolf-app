@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyledComponents } from './Gameplate.styled'
 import firebase from '../../../firebase'
 
-import Button from '../../atoms/Button'
+import { Button } from '../../atoms/Button'
 
 const Gameplate = ({ theme, room, playerName }) => {
     const [timer, setTimer] = useState(200) // カウントダウンする秒数
@@ -10,22 +10,22 @@ const Gameplate = ({ theme, room, playerName }) => {
 
     useEffect(() => {
         // 開始日時を設定
-        var dt = new Date();
+        var dt = new Date()
         // 終了時刻を開始日時+カウントダウンする秒数に設定
-        var endDt = new Date(dt.getTime() + timer * 1000);
+        var endDt = new Date(dt.getTime() + timer * 1000)
         // console.log("End : ", endDt);
 
         // 1秒おきにカウントダウン
-        var cnt = timer;
+        var cnt = timer
         var id = setInterval(function () {
-            cnt--;
+            cnt--
             setTimer(cnt)
             // 現在日時と終了日時を比較
-            dt = new Date();
+            dt = new Date()
             if (dt.getTime() >= endDt.getTime()) {
-                clearInterval(id);
+                clearInterval(id)
             }
-        }, 1000);
+        }, 1000)
     }, [])
 
     const vote = (player, index) => {
